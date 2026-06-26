@@ -125,7 +125,11 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .markdown-body tr{border-top-color:#3d444d}
   .markdown-body tr:nth-child(2n){background:#151b23}
   .heading-anchor{color:#9198a1}
-  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}}
+  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
+  .module-pagination{border-top-color:#3d444d;border-bottom-color:#3d444d}
+  .module-pagination a{color:#4493f8;background:#151b23}
+  .module-pagination a:hover{background:#1f2933}
+  .module-pagination a:not(:last-child){border-right-color:#3d444d}}
 }
 :root[data-theme="dark"]{body{color:#f0f6fc;background:#0d1117}
   .topbar{background:#0d1117;border-bottom-color:#3d444d}
@@ -157,19 +161,17 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .markdown-body tr{border-top-color:#3d444d}
   .markdown-body tr:nth-child(2n){background:#151b23}
   .heading-anchor{color:#9198a1}
-  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}}
+  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
+  .module-pagination{border-top-color:#3d444d;border-bottom-color:#3d444d}
+  .module-pagination a{color:#4493f8;background:#151b23}
+  .module-pagination a:hover{background:#1f2933}
+  .module-pagination a:not(:last-child){border-right-color:#3d444d}}
 
 /* Module pagination */
 .module-pagination{display:flex;margin-top:48px;border-top:1px solid #d0d7de;border-bottom:1px solid #d0d7de;overflow:hidden}
 .module-pagination a{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 24px;color:#0969da;background:#f6f8fa;font-size:14px;font-weight:500;cursor:pointer;line-height:1.4;transition:background .15s ease}
 .module-pagination a:hover{background:#eaeef2;text-decoration:none}
 .module-pagination a:not(:last-child){border-right:1px solid #d0d7de}
-@media(prefers-color-scheme:dark){
-  .module-pagination{border-top-color:#3d444d;border-bottom-color:#3d444d}
-  .module-pagination a{color:#4493f8;background:#151b23}
-  .module-pagination a:hover{background:#1f2933}
-  .module-pagination a:not(:last-child){border-right-color:#3d444d}
-}
 </style>
 <script>
   (function() {
