@@ -34,6 +34,12 @@ a:hover{text-decoration:underline}
 @media(max-width:1023px){.main{margin-left:0}}
 .topbar{position:sticky;top:0;z-index:20;background:#ffffff;border-bottom:1px solid #d0d7de;padding:12px 24px;display:flex;align-items:center;gap:12px;height:53px}
 .menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;cursor:pointer;flex-shrink:0}
+
+.scroll-to-top{position:fixed;right:24px;bottom:24px;width:44px;height:44px;border:1px solid #d0d7de;border-radius:50%;background:#f6f8fa;color:#1f2328;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .2s ease,visibility .2s ease,transform .2s ease,background .15s ease;border-color .15s ease;box-shadow:0 2px 8px rgba(31,35,40,.1);z-index:25}
+.scroll-to-top.show{opacity:1;visibility:visible;transform:translateY(0)}
+.scroll-to-top:hover{background:#eaeef2}
+.scroll-to-top svg{width:20px;height:20px}
+@media(max-width:1023px){.scroll-to-top{right:16px;bottom:16px}}
 .theme-toggle{margin-left:auto;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;cursor:pointer;color:#1f2328}
 .theme-toggle:hover{background:#eaeef2}
 .theme-toggle svg{width:18px;height:18px}
@@ -125,11 +131,14 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .markdown-body tr{border-top-color:#3d444d}
   .markdown-body tr:nth-child(2n){background:#151b23}
   .heading-anchor{color:#9198a1}
-  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
+  
+.theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
   .module-pagination{border-top-color:#3d444d;border-bottom-color:#3d444d}
   .module-pagination a{color:#4493f8;background:#151b23}
   .module-pagination a:hover{background:#1f2933}
-  .module-pagination a:not(:last-child){border-right-color:#3d444d}}
+  .module-pagination a:not(:last-child){border-right-color:#3d444d}
+  .scroll-to-top{background:#151b23;border-color:#3d444d;color:#f0f6fc;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .scroll-to-top:hover{background:#1f2933}}
 }
 :root[data-theme="dark"]{body{color:#f0f6fc;background:#0d1117}
   .topbar{background:#0d1117;border-bottom-color:#3d444d}
@@ -161,11 +170,14 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .markdown-body tr{border-top-color:#3d444d}
   .markdown-body tr:nth-child(2n){background:#151b23}
   .heading-anchor{color:#9198a1}
-  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
+  
+.theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}
   .module-pagination{border-top-color:#3d444d;border-bottom-color:#3d444d}
   .module-pagination a{color:#4493f8;background:#151b23}
   .module-pagination a:hover{background:#1f2933}
-  .module-pagination a:not(:last-child){border-right-color:#3d444d}}
+  .module-pagination a:not(:last-child){border-right-color:#3d444d}
+  .scroll-to-top{background:#151b23;border-color:#3d444d;color:#f0f6fc;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .scroll-to-top:hover{background:#1f2933}}
 
 /* Module pagination */
 .module-pagination{display:flex;margin-top:48px;border-top:1px solid #d0d7de;border-bottom:1px solid #d0d7de;overflow:hidden}
@@ -242,6 +254,10 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
       <a x-show="prevModule" :href="'#' + prevModule.id" @click.prevent="scrollTo(prevModule.id)" x-text="'← ' + prevModule.title"></a>
       <a x-show="nextModule" :href="'#' + nextModule.id" @click.prevent="scrollTo(nextModule.id)" x-text="nextModule.title + ' →'"></a>
     </nav>
+
+    <button class="scroll-to-top" :class="{show: showScrollToTop}" @click="scrollToTop" aria-label="Scroll to top">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"></path></svg>
+    </button>
 </div>
 
 <script>function b64ToUtf8(b64) {
@@ -1129,6 +1145,7 @@ document.addEventListener("alpine:init", () => {
     renderedHTML: "<p style='text-align:center;padding:40px;color:#656d76'>Loading documentation...</p>",
     navData: NAV_DATA,
     filteredParts: NAV_DATA,
+    showScrollToTop: false,
     theme: (function() {
       const stored = localStorage.getItem('theme');
       if (stored === 'dark' || stored === 'light') return stored;
@@ -1139,6 +1156,9 @@ document.addEventListener("alpine:init", () => {
       this.determineActiveModule();
       setTimeout(() => this.loadModule(this.activeModuleId), 0);
       this.applyTheme();
+      window.addEventListener('scroll', () => {
+        this.showScrollToTop = (window.scrollY || document.documentElement.scrollTop) > 400;
+      }, { passive: true });
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('theme')) {
           this.theme = e.matches ? 'dark' : 'light';
@@ -1200,6 +1220,10 @@ document.addEventListener("alpine:init", () => {
       this.theme = this.theme === 'dark' ? 'light' : 'dark';
       localStorage.setItem('theme', this.theme);
       this.applyTheme();
+    },
+
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
     applyTheme() {
