@@ -34,6 +34,10 @@ a:hover{text-decoration:underline}
 @media(max-width:1023px){.main{margin-left:0}}
 .topbar{position:sticky;top:0;z-index:20;background:#ffffff;border-bottom:1px solid #d0d7de;padding:12px 24px;display:flex;align-items:center;gap:12px;height:53px}
 .menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;cursor:pointer;flex-shrink:0}
+.theme-toggle{margin-left:auto;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;cursor:pointer;color:#1f2328}
+.theme-toggle:hover{background:#eaeef2}
+.theme-toggle svg{width:18px;height:18px}
+
 @media(min-width:1024px){.menu-btn{display:none}}
 .menu-btn svg{width:18px;height:18px}
 .topbar-title{font-size:14px;font-weight:600;color:#1f2328;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -89,7 +93,7 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
 .sidebar::-webkit-scrollbar{width:6px}
 .sidebar::-webkit-scrollbar-thumb{background:#d0d7de;border-radius:3px}
 @media(prefers-color-scheme:dark){
-  body{color:#f0f6fc;background:#0d1117}
+  :root:not([data-theme="light"]){body{color:#f0f6fc;background:#0d1117}
   .topbar{background:#0d1117;border-bottom-color:#3d444d}
   .topbar-title{color:#f0f6fc}
   .menu-btn{background:#151b23;border-color:#3d444d;color:#f0f6fc}
@@ -120,7 +124,40 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .markdown-body tr{border-top-color:#3d444d}
   .markdown-body tr:nth-child(2n){background:#151b23}
   .heading-anchor{color:#9198a1}
+  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}}
 }
+:root[data-theme="dark"]{body{color:#f0f6fc;background:#0d1117}
+  .topbar{background:#0d1117;border-bottom-color:#3d444d}
+  .topbar-title{color:#f0f6fc}
+  .menu-btn{background:#151b23;border-color:#3d444d;color:#f0f6fc}
+  .sidebar{background:#0d1117;border-right-color:#3d444d}
+  .sidebar-header{border-bottom-color:#3d444d}
+  .sidebar-header h1{color:#f0f6fc}
+  .nav-part{color:#9198a1}
+  .nav-module{color:#f0f6fc}.nav-module:hover{color:#4493f8}
+  .nav-topic{color:#f0f6fc}
+  .nav-topic:hover{background:#151b23}
+  .nav-topic.active{background:#151b23;border-left-color:#4493f8;color:#4493f8}
+  .nav-topic-num{color:#9198a1}
+  .nav-subtopic{color:#9198a1}
+  .nav-subtopic:hover{color:#4493f8}
+  .search-box input{background:#0d1117;border-color:#3d444d;color:#f0f6fc}
+  .search-box input:focus{border-color:#4493f8;box-shadow:0 0 0 2px rgba(68,147,248,.15)}
+  .sidebar-overlay{background:rgba(0,0,0,.65)}
+  .sidebar::-webkit-scrollbar-thumb{background:#3d444d}
+  .markdown-body{color:#f0f6fc}
+  .markdown-body h1,.markdown-body h2{border-bottom-color:#3d444d}
+  .markdown-body h6{color:#9198a1}
+  .markdown-body blockquote{color:#9198a1;border-left-color:#3d444d}
+  .markdown-body hr{background:#3d444d}
+  .markdown-body code{background:#656c7633}
+  .markdown-body pre{background:#151b23}
+  .markdown-body th,.markdown-body td{border-color:#3d444d}
+  .markdown-body th{background:#151b23}
+  .markdown-body tr{border-top-color:#3d444d}
+  .markdown-body tr:nth-child(2n){background:#151b23}
+  .heading-anchor{color:#9198a1}
+  .theme-toggle{background:#151b23;border-color:#3d444d;color:#f0f6fc}}
 
 /* Module pagination */
 .module-pagination{display:flex;margin-top:48px;border-top:1px solid #d0d7de;border-bottom:1px solid #d0d7de;overflow:hidden}
@@ -134,6 +171,16 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
   .module-pagination a:not(:last-child){border-right-color:#3d444d}
 }
 </style>
+<script>
+  (function() {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || stored === 'light') {
+      document.documentElement.setAttribute('data-theme', stored);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 </head>
 <body x-data="docNav" x-init="init()" @keydown.window.escape="sidebarOpen=false" :class="sidebarOpen ? 'sidebar-open' : ''">
 
@@ -177,6 +224,10 @@ h1:hover .heading-anchor,h2:hover .heading-anchor,h3:hover .heading-anchor,h4:ho
       <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Z"></path></svg>
     </button>
     <span class="topbar-title" x-text="pageTitle">Go Programming: The Master-Class Guide</span>
+    <button class="theme-toggle" @click="toggleTheme" :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+      <svg x-show="theme !== 'dark'" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0Zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13Zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5ZM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8Zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0Zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0Zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707ZM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708Z"></path></svg>
+      <svg x-show="theme === 'dark'" viewBox="0 0 16 16" fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278Z"></path></svg>
+    </button>
   </header>
   <article class="content markdown-body" id="markdown-body" x-html="renderedHTML"></article>
     <nav class="module-pagination" x-show="prevModule || nextModule">
@@ -1070,10 +1121,22 @@ document.addEventListener("alpine:init", () => {
     renderedHTML: "<p style='text-align:center;padding:40px;color:#656d76'>Loading documentation...</p>",
     navData: NAV_DATA,
     filteredParts: NAV_DATA,
+    theme: (function() {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'dark' || stored === 'light') return stored;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    })(),
 
     init() {
       this.determineActiveModule();
       setTimeout(() => this.loadModule(this.activeModuleId), 0);
+      this.applyTheme();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          this.theme = e.matches ? 'dark' : 'light';
+          this.applyTheme();
+        }
+      });
       window.addEventListener("popstate", () => {
         const id = window.location.hash ? window.location.hash.slice(1) : "";
         if (id && TOPIC_TO_MODULE[id]) {
@@ -1123,6 +1186,16 @@ document.addEventListener("alpine:init", () => {
         this.renderedHTML = "<p style='text-align:center;padding:40px;color:#cf222e'>Failed to render documentation. Check the browser console.</p>";
         console.error(e);
       }
+    },
+
+    toggleTheme() {
+      this.theme = this.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', this.theme);
+      this.applyTheme();
+    },
+
+    applyTheme() {
+      document.documentElement.setAttribute('data-theme', this.theme);
     },
 
     renderMarkdown(md) {
