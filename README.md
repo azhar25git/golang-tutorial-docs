@@ -21,17 +21,6 @@ No build tools, no bundlers. Just static HTML, CSS, and JavaScript.
 - [marked](https://marked.js.org/) — markdown rendering
 - [Prism.js](https://prismjs.com/) — syntax highlighting
 
-## Development
-
-```bash
-# Serve locally with any static file server
-python3 -m http.server 8000
-# or
-npx serve .
-```
-
-Open `http://localhost:8000` in your browser.
-
 ## Project Structure
 
 ```
