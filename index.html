@@ -33,7 +33,14 @@
 
 <aside class="sidebar" :class="{closed:!sidebarOpen}" id="sidebar">
   <div class="sidebar-header">
-    <h1>Go Master-Class Guide</h1>
+    <h1 x-text="pageTitle">Go Programming: The Master-Class Guide</h1>
+    <a href="https://github.com/azhar25git/golang-tutorial-docs" target="_blank" rel="noopener" class="sidebar-header-link">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+      <span class="sidebar-header-badges">
+        <img src="https://img.shields.io/github/stars/azhar25git/golang-tutorial-docs?style=social" alt="GitHub stars">
+        <img src="https://visitor-badge.laobi.icu/badge?page_id=azhar25git.golang-tutorial-docs" alt="Visitors">
+      </span>
+    </a>
   </div>
   <div class="search-box">
     <input type="text" placeholder="Filter topics..." x-model="search" @input="filterTopics">
@@ -44,13 +51,20 @@
         <div class="nav-part" x-text="part.title"></div>
         <template x-for="mod in part.modules" :key="mod.id">
           <div>
-            <a class="nav-module" href="#" @click.prevent="scrollTo(mod.id)" x-text="mod.title"></a>
-            <template x-for="topic in mod.topics" :key="topic.id">
+            <div class="nav-module" :class="{expanded:expandedModules[mod.id]}" @click="toggleModule(mod.id)">
+              <span class="nav-module-chevron" x-text="expandedModules[mod.id] ? '▾' : '▸'"></span>
+              <span x-text="mod.title"></span>
+            </div>
+            <template x-if="expandedModules[mod.id]">
               <div>
-                <a class="nav-topic" :class="{active:activeTopic===topic.id}" :href="'#'+topic.id" @click.prevent="scrollTo(topic.id)">
-                  <span class="nav-topic-num" x-text="topic.number+'.'"></span>
-                  <span x-text="topic.title"></span>
-                </a>
+                <template x-for="topic in mod.topics" :key="topic.id">
+                  <div>
+                    <a class="nav-topic" :class="{active:activeTopic===topic.id}" :href="'#'+topic.id" @click.prevent="scrollTo(topic.id)">
+                      <span class="nav-topic-num" x-text="topic.number+'.'"></span>
+                      <span x-text="topic.title"></span>
+                    </a>
+                  </div>
+                </template>
               </div>
             </template>
           </div>
@@ -65,12 +79,18 @@
     <button class="menu-btn" @click="sidebarOpen=!sidebarOpen" aria-label="Toggle menu">
       <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12a.75.75 0 0 0 0 1.5h12.5a.75.75 0 0 0 0-1.5Z"></path></svg>
     </button>
-    <span class="topbar-title" x-text="pageTitle">Go Programming: The Master-Class Guide</span>
+    <span class="topbar-title">Go Programming &mdash; The Master-Class Guide</span>
     <button class="theme-toggle" @click="toggleTheme" :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
       <svg x-show="theme !== 'dark'" viewBox="0 0 16 16" fill="currentColor"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0Zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13Zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5ZM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8Zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0Zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0Zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707ZM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708Z"></path></svg>
       <svg x-show="theme === 'dark'" viewBox="0 0 16 16" fill="currentColor"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278Z"></path></svg>
     </button>
   </header>
+  <div class="star-banner" x-show="showStarBanner">
+    <span>If you find this guide useful, please </span>
+    <a href="https://github.com/azhar25git/golang-tutorial-docs" target="_blank" rel="noopener">★ star it on GitHub</a>
+    <span> — it helps others discover it!</span>
+    <button class="star-banner-close" @click="dismissStarBanner" aria-label="Dismiss">&times;</button>
+  </div>
   <article class="content markdown-body" id="markdown-body" x-html="renderedHTML"></article>
     <nav class="module-pagination" x-show="prevModule || nextModule">
       <a x-show="prevModule" :href="prevModule ? '#' + prevModule.id : '#'" @click.prevent="prevModule && scrollTo(prevModule.id)" x-text="prevModule ? '← ' + prevModule.title : ''"></a>

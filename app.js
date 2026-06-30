@@ -883,7 +883,9 @@ document.addEventListener("alpine:init", () => {
     renderedHTML: "<p style='text-align:center;padding:40px;color:#656d76'>Loading documentation...</p>",
     navData: NAV_DATA,
     filteredParts: NAV_DATA,
+    expandedModules: {},
     showScrollToTop: false,
+    showStarBanner: !localStorage.getItem('starBannerDismissed'),
     theme: (function() {
       const stored = localStorage.getItem('theme');
       if (stored === 'dark' || stored === 'light') return stored;
@@ -892,6 +894,7 @@ document.addEventListener("alpine:init", () => {
 
     init() {
       this.determineActiveModule();
+      this.expandActiveModule();
       setTimeout(() => this.loadModule(this.activeModuleId), 0);
       this.applyTheme();
       window.addEventListener('scroll', () => {
@@ -924,11 +927,23 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    expandActiveModule() {
+      for (const part of this.navData) {
+        for (const mod of part.modules) {
+          if (mod.id === this.activeModuleId) {
+            this.expandedModules = { ...this.expandedModules, [mod.id]: true };
+            return;
+          }
+        }
+      }
+    },
+
     loadModule(moduleId) {
       if (!moduleId || !MODULES_CONTENT[moduleId]) {
         moduleId = "module-1-the-environment-syntax-basics";
       }
       this.activeModuleId = moduleId;
+      this.expandedModules = { ...this.expandedModules, [moduleId]: true };
 
       const hashId = window.location.hash ? window.location.hash.slice(1) : "";
       const keepHash = hashId && (TOPIC_TO_MODULE[hashId] === moduleId || hashId === moduleId);
@@ -962,6 +977,11 @@ document.addEventListener("alpine:init", () => {
 
     scrollToTop() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    dismissStarBanner() {
+      this.showStarBanner = false;
+      localStorage.setItem('starBannerDismissed', '1');
     },
 
     applyTheme() {
@@ -1009,6 +1029,10 @@ document.addEventListener("alpine:init", () => {
       }
     },
 
+    toggleModule(moduleId) {
+      this.expandedModules = { ...this.expandedModules, [moduleId]: !this.expandedModules[moduleId] };
+    },
+
     scrollTo(id) {
       if (!id) return;
       const targetModule = TOPIC_TO_MODULE[id];
@@ -1053,7 +1077,22 @@ document.addEventListener("alpine:init", () => {
 
     filterTopics() {
       const q = this.search.toLowerCase().trim();
-      if (!q) { this.filteredParts = this.navData; return; }
+      if (!q) {
+        this.filteredParts = this.navData;
+        const em = {};
+        for (const part of this.navData) {
+          for (const mod of part.modules) {
+            if (mod.id === this.activeModuleId) em[mod.id] = true;
+          }
+        }
+        this.expandedModules = em;
+        return;
+      }
+      const em = {};
+      for (const part of this.navData) {
+        for (const mod of part.modules) em[mod.id] = true;
+      }
+      this.expandedModules = em;
       this.filteredParts = this.navData.map(part => ({
         ...part,
         modules: part.modules.map(mod => ({
